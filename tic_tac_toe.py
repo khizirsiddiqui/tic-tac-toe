@@ -80,7 +80,7 @@ def getPlayerMove(board):
            not isSpaceFree(board, int(move))):
         print("Enter your next move:")
         move = input()
-        if move not in '1 2 3 4 5 6 7 8 9'.split():
+        if move in '1 2 3 4 5 6 7 8 9'.split():
             break
         else:
             print('Enter Valid Move')
@@ -99,6 +99,22 @@ def chooseRandomMoveFromList(board, movesList):
         return None
 
 
+def testWinMove(board, letter, move):
+    bCopy = getBoardCopy(board)
+    makeMove(bCopy, letter, move)
+    return isWinner(bCopy, letter)
+
+
+def testForkMove(board, letter, move):
+    bCopy = getBoardCopy(board)
+    makeMove(bCopy, letter, move)
+    winningMoves = 0
+    for j in range(1, 10):
+        if testWinMove(bCopy, letter, j) and isSpaceFree(bCopy, j):
+            winningMoves += 1
+    return winningMoves > 1
+
+
 def getComputerMove(board, computerLetter):
     if computerLetter is 'X':
         playerLetter = 'O'
@@ -106,18 +122,20 @@ def getComputerMove(board, computerLetter):
         playerLetter = 'X'
 
     for i in range(1, 10):
-        copy = getBoardCopy(board)
-        if isSpaceFree(copy, i):
-            makeMove(copy, computerLetter, i)
-            if isWinner(copy, computerLetter):
+        if isSpaceFree(board, i) and testWinMove(board, computerLetter, i):
                 return i
 
     for i in range(1, 10):
-        copy = getBoardCopy(board)
-        if isSpaceFree(copy, i):
-            makeMove(copy, playerLetter, i)
-            if isWinner(copy, playerLetter):
+        if isSpaceFree(board, i) and testWinMove(board, playerLetter, i):
                 return i
+
+    for i in range(1, 10):
+        if isSpaceFree(board, i) and testForkMove(board, computerLetter, i):
+            return i
+
+    for i in range(1, 10):
+        if isSpaceFree(board, i) and testForkMove(board, playerLetter, i):
+            return i
 
     move = chooseRandomMoveFromList(board, [1, 3, 7, 9])
     if move is not None:
