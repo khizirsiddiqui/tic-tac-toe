@@ -4,6 +4,7 @@ Github: khizirsiddiqui
 Using Tutorial: https://inventwithpython.com/chapter10.html
 '''
 
+import time
 import random
 import os
 
@@ -76,14 +77,11 @@ def isSpaceFree(board, move):
 
 def getPlayerMove(board):
     move = ' '
-    while (move not in '1 2 3 4 5 6 7 8 9'.split() or
-           not isSpaceFree(board, int(move))):
-        print("Enter your next move:")
+    while move not in '1 2 3 4 5 6 7 8 9'.split() or not isSpaceFree(board, int(move)):
+        print('What is your next move? (1-9)')
         move = input()
-        if move in '1 2 3 4 5 6 7 8 9'.split():
-            break
-        else:
-            print('Enter Valid Move')
+        if move not in '1 2 3 4 5 6 7 8 9'.split() or not isSpaceFree(board, int(move)):
+            print('Select from a free space.')
     return int(move)
 
 
@@ -115,7 +113,7 @@ def testForkMove(board, letter, move):
     return winningMoves > 1
 
 
-def getComputerMove(board, computerLetter):
+def getComputerMove(board, computerLetter, difficulty):
     if computerLetter is 'X':
         playerLetter = 'O'
     else:
@@ -123,29 +121,31 @@ def getComputerMove(board, computerLetter):
 
     for i in range(1, 10):
         if isSpaceFree(board, i) and testWinMove(board, computerLetter, i):
-                return i
+            return i
 
     for i in range(1, 10):
         if isSpaceFree(board, i) and testWinMove(board, playerLetter, i):
+            return i
+
+    if difficulty == 2 or difficulty == 3:
+        for i in range(1, 10):
+            if isSpaceFree(board, i) and testForkMove(board, computerLetter, i):
                 return i
 
-    for i in range(1, 10):
-        if isSpaceFree(board, i) and testForkMove(board, computerLetter, i):
-            return i
+        for i in range(1, 10):
+            if isSpaceFree(board, i) and testForkMove(board, playerLetter, i):
+                return i
 
-    for i in range(1, 10):
-        if isSpaceFree(board, i) and testForkMove(board, playerLetter, i):
-            return i
-
-    playerForks = 0
-    for i in range(1, 10):
-        if isSpaceFree(board, i) and testForkMove(board, playerLetter, i):
-            playerForks += 1
-            tempMove = i
-    if playerForks == 1:
-        return tempMove
-    elif playerForks == 2:
-        return chooseRandomMoveFromList(board, [1, 3, 5, 7])
+    if difficulty == 3:
+        playerForks = 0
+        for i in range(1, 10):
+            if isSpaceFree(board, i) and testForkMove(board, playerLetter, i):
+                playerForks += 1
+                tempMove = i
+        if playerForks == 1:
+            return tempMove
+        elif playerForks == 2:
+            return chooseRandomMoveFromList(board, [1, 3, 5, 7])
 
     move = chooseRandomMoveFromList(board, [1, 3, 7, 9])
     if move is not None:
@@ -164,23 +164,43 @@ def isBoardFull(board):
     return True
 
 
+def getDifficulty():
+    print('Select Difficulty Level:')
+    print('1. Easy Beginner')
+    print('2. Warmed Up Cooker')
+    print('3. Defeat in Hell')
+    difficulty = 1
+    while difficulty not in range(1, 3):
+        difficulty = int(input('Choose:'))
+    return difficulty
+
+
 print('Welcome to Tic-Tac-Toe')
 while True:
     theBoard = [' '] * 10
 
     playerLetter, computerLetter = inputPlayerLetter()
-    turn = whoGoesFirst()
 
+    print('Select Difficulty Level:')
+    print('1. Easy Beginner (Default)')
+    print('2. Warmed Up Cooker')
+    print('3. Defeat in Hell')
+    difficulty = int(input())
+    if difficulty not in range(1, 3):
+        print('Try Again')
+        continue
+    turn = whoGoesFirst()
+    move = ' '
     print(turn + ' goes first')
     gameIsPlaying = True
 
     while gameIsPlaying:
+        print()
         if turn == player:
             move = getPlayerMove(theBoard)
             makeMove(theBoard, playerLetter, move)
 
             if isWinner(theBoard, playerLetter):
-                print('Hooray! You won.')
                 gameIsPlaying = False
             else:
                 if isBoardFull(theBoard):
@@ -189,10 +209,9 @@ while True:
                 else:
                     turn = computer
         else:
-            move = getComputerMove(theBoard, computerLetter)
+            move = getComputerMove(theBoard, computerLetter, difficulty)
             makeMove(theBoard, computerLetter, move)
             if isWinner(theBoard, computerLetter):
-                print('The Computer won. You Lost')
                 gameIsPlaying = False
             else:
                 if isBoardFull(theBoard):
@@ -202,11 +221,11 @@ while True:
                     turn = player
         os.system('cls' if os.name == 'nt' else 'clear')
         if isWinner(theBoard, playerLetter):
-            print('Hooray! You won.')
+            print('Hooray! ' + player + ' won.')
         elif isWinner(theBoard, computerLetter):
-            print('The Computer won. You Lost')
-        else:
-            draw_board(theBoard)
+            print(computer + ' won. You Lost')
+        print()
+        draw_board(theBoard)
 
     if not playAgain():
         break
