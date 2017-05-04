@@ -137,6 +137,16 @@ def getComputerMove(board, computerLetter):
         if isSpaceFree(board, i) and testForkMove(board, playerLetter, i):
             return i
 
+    playerForks = 0
+    for i in range(1, 10):
+        if isSpaceFree(board, i) and testForkMove(board, playerLetter, i):
+            playerForks += 1
+            tempMove = i
+    if playerForks == 1:
+        return tempMove
+    elif playerForks == 2:
+        return chooseRandomMoveFromList(board, [1, 3, 5, 7])
+
     move = chooseRandomMoveFromList(board, [1, 3, 7, 9])
     if move is not None:
         return move
