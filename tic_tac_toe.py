@@ -2,6 +2,8 @@
 Author: Mohd Khizir Siddiqui
 Github: khizirsiddiqui
 Using Tutorial: https://inventwithpython.com/chapter10.html
+Extended with: https://mblogscode.wordpress.com/2016/06/03/python-naughts-cross
+                       estic-tac-toe-coding-unbeatable-ai/
 '''
 
 import time
@@ -10,27 +12,33 @@ import os
 
 player = 'Player (User)'
 computer = 'Computer (AI)'
+left_margin = '                 '
 
 
 def draw_board(board):
-    print('     |     |')
-    print('  ' + board[7] + '  |  ' + board[8] + '  |  ' + board[9])
-    print('     |     |')
-    print('----------------')
-    print('     |     |')
-    print('  ' + board[4] + '  |  ' + board[5] + '  |  ' + board[6])
-    print('     |     |')
-    print('----------------')
-    print('     |     |')
-    print('  ' + board[1] + '  |  ' + board[2] + '  |  ' + board[3])
-    print('     |     |')
+    for i in range(1, 10):
+        print()
+    print(left_margin + '     |     |')
+    print(left_margin + '  ' + board[7] +
+          '  |  ' + board[8] + '  |  ' + board[9])
+    print(left_margin + '     |     |')
+    print(left_margin + '----------------')
+    print(left_margin + '     |     |')
+    print(left_margin + '  ' + board[4] +
+          '  |  ' + board[5] + '  |  ' + board[6])
+    print(left_margin + '     |     |')
+    print(left_margin + '----------------')
+    print(left_margin + '     |     |')
+    print(left_margin + '  ' + board[1] +
+          '  |  ' + board[2] + '  |  ' + board[3])
+    print(left_margin + '     |     |')
 
 
 def inputPlayerLetter():
     letter = ''
     while not (letter == 'X' or letter == 'O'):
-        print("Select X or O:")
-        letter = input().upper()
+        print(left_margin + "Select X or O:")
+        letter = input(left_margin).upper()
     if letter is 'X':
         return ['X', 'O']
     else:
@@ -45,8 +53,8 @@ def whoGoesFirst():
 
 
 def playAgain():
-    print("Do you want to play again?")
-    return input().upper().startswith('Y')
+    print(left_margin + "Do you want to play again?")
+    return input(left_margin).upper().startswith('Y')
 
 
 def makeMove(board, letter, move):
@@ -77,11 +85,13 @@ def isSpaceFree(board, move):
 
 def getPlayerMove(board):
     move = ' '
-    while move not in '1 2 3 4 5 6 7 8 9'.split() or not isSpaceFree(board, int(move)):
-        print('What is your next move? (1-9)')
-        move = input()
+    while True:
+        print(left_margin + 'Play your move? (1-9)')
+        move = input(left_margin)
         if move not in '1 2 3 4 5 6 7 8 9'.split() or not isSpaceFree(board, int(move)):
-            print('Select from a free space.')
+            print(left_margin + 'Select from a free space.')
+        else:
+            break
     return int(move)
 
 
@@ -164,34 +174,24 @@ def isBoardFull(board):
     return True
 
 
-def getDifficulty():
-    print('Select Difficulty Level:')
-    print('1. Easy Beginner')
-    print('2. Warmed Up Cooker')
-    print('3. Defeat in Hell')
-    difficulty = 1
-    while difficulty not in range(1, 3):
-        difficulty = int(input('Choose:'))
-    return difficulty
-
-
-print('Welcome to Tic-Tac-Toe')
+print(left_margin + 'Welcome to Tic-Tac-Toe')
 while True:
     theBoard = [' '] * 10
 
     playerLetter, computerLetter = inputPlayerLetter()
 
-    print('Select Difficulty Level:')
-    print('1. Easy Beginner (Default)')
-    print('2. Warmed Up Cooker')
-    print('3. Defeat in Hell')
-    difficulty = int(input())
+    print(left_margin + 'Select Difficulty Level:')
+    print(left_margin + '1. Easy Beginner (Default)')
+    print(left_margin + '2. Warmed Up Cooker')
+    print(left_margin + '3. Defeat in Hell')
+    difficulty = int(input(left_margin))
     if difficulty not in range(1, 3):
-        print('Try Again')
+        print(left_margin + 'Try Again')
         continue
+
     turn = whoGoesFirst()
     move = ' '
-    print(turn + ' goes first')
+    print(left_margin + turn + ' goes first')
     gameIsPlaying = True
 
     while gameIsPlaying:
@@ -204,7 +204,7 @@ while True:
                 gameIsPlaying = False
             else:
                 if isBoardFull(theBoard):
-                    print('A TIE')
+                    print(left_margin + 'A TIE')
                     break
                 else:
                     turn = computer
@@ -215,15 +215,15 @@ while True:
                 gameIsPlaying = False
             else:
                 if isBoardFull(theBoard):
-                    print('The game is a tie')
+                    print(left_margin + 'The game is a tie')
                     break
                 else:
                     turn = player
         os.system('cls' if os.name == 'nt' else 'clear')
         if isWinner(theBoard, playerLetter):
-            print('Hooray! ' + player + ' won.')
+            print(left_margin + 'Hooray! ' + player + ' won.')
         elif isWinner(theBoard, computerLetter):
-            print(computer + ' won. You Lost')
+            print(left_margin + computer + ' won. You Lost')
         print()
         draw_board(theBoard)
 
