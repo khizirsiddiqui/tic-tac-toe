@@ -16,13 +16,11 @@ left_margin = '                 '
 
 
 def draw_board(board):
-    for i in range(1, 10):
-        print()
     print(left_margin + '     |     |')
     print(left_margin + '  ' + board[7] +
           '  |  ' + board[8] + '  |  ' + board[9])
     print(left_margin + '     |     |')
-    print(left_margin + '----------------')
+    print(left_margin + '----   ------------')
     print(left_margin + '     |     |')
     print(left_margin + '  ' + board[4] +
           '  |  ' + board[5] + '  |  ' + board[6])
